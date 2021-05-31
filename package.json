@@ -1,0 +1,29 @@
+{
+  "name": "statictrace",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "tsc -w",
+    "parse": "node build/parse.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jlkiri/statictrace.git"
+  },
+  "keywords": [],
+  "author": "Kirill Vasiltsov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jlkiri/statictrace/issues"
+  },
+  "homepage": "https://github.com/jlkiri/statictrace#readme",
+  "dependencies": {
+    "ts-morph": "^11.0.0",
+    "typescript": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^15.6.1"
+  }
+}
