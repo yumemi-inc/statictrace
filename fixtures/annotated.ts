@@ -1,29 +1,44 @@
-/**
- * @trace RegistrationFlow: B
- */
-function continuteRegistration() {}
+/** @trace */
+function continuteRegistration() {
+  calledDuringRegistration();
+}
 
 /**
- * @trace RegistrationFlow: A
+ * @entrypoint Registration
  */
-function startRegistration() {}
+function startRegistration() {
+  continuteRegistration();
+  finishRegistration();
+  untracedFunction();
+  cleanupSomething();
+}
 
-/**
- * @trace RegistrationFlow: C
- */
-function finishRegistration() {}
+/** @trace */
+function cleanupSomething() {}
 
-/**
- * @trace PurchaseFlow: A
- */
+/** @trace */
+function finishRegistration() {
+  tracedDeepCall();
+}
+
+/** @trace */
+function calledDuringRegistration() {
+  anotherTracedDeepCall();
+  untracedDeepCall();
+}
+
+/** @trace */
+function tracedDeepCall() {}
+
+function untracedDeepCall() {}
+
+/** @trace */
+function anotherTracedDeepCall() {}
+
 function startPurchase() {}
 
-/**
- * @trace PurchaseFlow: B
- */
 function continuePurchase() {}
 
-/**
- * @trace PurchaseFlow: C
- */
 function finishPurchase() {}
+
+function untracedFunction() {}

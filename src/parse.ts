@@ -1,53 +1,69 @@
-import { Project } from "ts-morph";
+import { FunctionDeclaration, Project, SyntaxKind } from "ts-morph";
 import path from "path";
 
-type FlowName = string;
+type Entrypoint = string;
+type TracedCall = { name: string; level: number };
+type Entrypoints = Map<Entrypoint, Array<TracedCall>>;
 
 const project = new Project({
   tsConfigFilePath: path.resolve(process.cwd(), "fixtures/tsconfig.json"),
 });
 
-class Trace {
-  flowName: string;
-  order: string;
-  funcName: string;
+const entrypoints: Entrypoints = new Map();
 
-  constructor(flowName: string, order: string, funcName: string) {
-    this.flowName = flowName;
-    this.order = order.trim();
-    this.funcName = funcName;
+for (const sourceFile of project.getSourceFiles()) {
+  const functions = sourceFile.getFunctions();
+
+  for (const func of functions) {
+    const signature = func.getSignature();
+    const annotations = signature.getJsDocTags();
+    const entrypointTag = annotations.find(
+      (tag) => tag.getName() == "entrypoint"
+    );
+
+    if (entrypointTag) {
+      const { text } = entrypointTag.getText()[0];
+      entrypoints.set(text, [{ name: func.getName()!, level: 0 }]);
+
+      traceFunctions(entrypoints, text, func);
+    }
   }
 }
 
-for (let sourceFile of project.getSourceFiles()) {
-  const executionFlows: Map<FlowName, Array<Trace>> = new Map();
+function isTraced(func: FunctionDeclaration) {
+  const signature = func.getSignature();
+  const annotations = signature.getJsDocTags();
+  return annotations.some((tag) => tag.getName() == "trace");
+}
 
-  for (let func of sourceFile.getFunctions()) {
-    const signature = func.getSignature();
-    const traceTags = signature
-      .getJsDocTags()
-      .filter((tag) => tag.getName() == "trace");
+function traceFunctions(
+  entrypoints: Entrypoints,
+  entrypoint: string,
+  func: FunctionDeclaration,
+  level: number = 0
+) {
+  for (const call of func.getDescendantsOfKind(SyntaxKind.CallExpression)) {
+    const identNode = call.getFirstDescendantOrThrow();
+    const ident = identNode?.asKindOrThrow(SyntaxKind.Identifier);
 
-    const traces = traceTags.map((tag) => {
-      const { text } = tag.getText()[0];
-      const [flowName, order] = text.split(":");
-      return new Trace(flowName, order, func.getName()!);
-    });
+    for (const def of ident.getDefinitions()) {
+      const f = def
+        .getDeclarationNode()!
+        .asKindOrThrow(SyntaxKind.FunctionDeclaration);
 
-    for (const trace of traces) {
-      if (!executionFlows.get(trace.flowName)) {
-        executionFlows.set(trace.flowName, []);
+      if (isTraced(f)) {
+        const fns = entrypoints.get(entrypoint)!;
+        fns?.push({ name: f.getName()!, level });
       }
 
-      let trs = executionFlows.get(trace.flowName)!;
-      trs.push(trace);
-      executionFlows.set(trace.flowName, trs);
+      traceFunctions(entrypoints, entrypoint, f, level + 1);
     }
   }
+}
 
-  for (const [flowName, traces] of executionFlows.entries()) {
-    traces.sort((a, b) => Number(a.order < b.order));
-    console.log(flowName);
-    console.log(traces.map((t) => t.funcName).join(" -> "));
+for (const [ep, tracedCalls] of entrypoints.entries()) {
+  console.log("Entrypoint: ", ep, "\n");
+  for (const call of tracedCalls) {
+    console.log("\t".repeat(call.level), call.name);
   }
 }
