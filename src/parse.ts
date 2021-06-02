@@ -22,7 +22,9 @@ for (const sourceFile of project.getSourceFiles()) {
     );
 
     if (entrypointTag) {
-      const { text } = entrypointTag.getText()[0];
+      const { text } = entrypointTag.getText()[0]; // Represents text in /** @entrypoint text */.
+
+      // No traced functions are anonymous.
       entrypoints.set(text, [{ name: func.getName()!, level: 0 }]);
 
       traceFunctions(entrypoints, text, func);
@@ -33,7 +35,7 @@ for (const sourceFile of project.getSourceFiles()) {
 function isTraced(func: FunctionDeclaration) {
   const signature = func.getSignature();
   const annotations = signature.getJsDocTags();
-  return annotations.some((tag) => tag.getName() == "trace");
+  return annotations.find((tag) => tag.getName() == "trace");
 }
 
 function traceFunctions(
@@ -46,15 +48,19 @@ function traceFunctions(
     const identNode = call.getFirstDescendantOrThrow();
     const ident = identNode?.asKindOrThrow(SyntaxKind.Identifier);
 
-    for (const def of ident.getDefinitions()) {
-      const f = def
+    for (const definition of ident.getDefinitions()) {
+      const calledFunc = definition
         .getDeclarationNode()!
         .asKindOrThrow(SyntaxKind.FunctionDeclaration);
 
-      if (isTraced(f)) {
-        const fns = entrypoints.get(entrypoint)!;
-        fns?.push({ name: f.getName()!, level });
-        traceFunctions(entrypoints, entrypoint, f, level + 1);
+      if (isTraced(calledFunc)) {
+        // Entrypoint is guaranteed to exist.
+        const tracedCalls = entrypoints.get(entrypoint)!;
+
+        tracedCalls.push({ name: calledFunc.getName()!, level });
+
+        // Recurse until the function stops calling other functions.
+        traceFunctions(entrypoints, entrypoint, calledFunc, level + 1);
       }
     }
   }
