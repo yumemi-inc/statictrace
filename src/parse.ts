@@ -54,9 +54,8 @@ function traceFunctions(
       if (isTraced(f)) {
         const fns = entrypoints.get(entrypoint)!;
         fns?.push({ name: f.getName()!, level });
+        traceFunctions(entrypoints, entrypoint, f, level + 1);
       }
-
-      traceFunctions(entrypoints, entrypoint, f, level + 1);
     }
   }
 }
