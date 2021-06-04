@@ -1,13 +1,22 @@
 import { FunctionDeclaration, Project, SyntaxKind } from "ts-morph";
-import path from "path";
+import { Command } from "commander";
+
+import dotenv from "dotenv";
+
+dotenv.config();
 
 type Entrypoint = string;
 type TracedCall = { name: string; level: number };
 type Entrypoints = Map<Entrypoint, Array<TracedCall>>;
 
-const project = new Project({
-  tsConfigFilePath: path.resolve(process.cwd(), "fixtures/tsconfig.json"),
-});
+const program = new Command();
+program.option("-p, --project <path>", "path to a tsconfig.json file");
+program.parse();
+
+const projectConfig = program.opts()["project"];
+const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
+
+const project = new Project({ tsConfigFilePath });
 
 const entrypoints: Entrypoints = new Map();
 
