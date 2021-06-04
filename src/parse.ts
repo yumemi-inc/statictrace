@@ -46,7 +46,7 @@ function traceFunctions(
 ) {
   for (const call of func.getDescendantsOfKind(SyntaxKind.CallExpression)) {
     const identNode = call.getFirstDescendantOrThrow();
-    const ident = identNode?.asKindOrThrow(SyntaxKind.Identifier);
+    const ident = identNode.asKindOrThrow(SyntaxKind.Identifier);
 
     for (const definition of ident.getDefinitions()) {
       const calledFunc = definition
