@@ -33,10 +33,9 @@ const entrypoints: Entrypoints = new Map();
 
 for (const sourceFile of project.getSourceFiles()) {
   const functions = sourceFile.getFunctions();
+  const classes = sourceFile.getClasses();
 
   traceEntrypoints(functions);
-
-  const classes = sourceFile.getClasses();
 
   for (const clazz of classes) {
     traceEntrypoints(clazz.getConstructors());
