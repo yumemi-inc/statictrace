@@ -2,21 +2,36 @@
 
 exports[`Prints to stdout correctly 1`] = `
 "=======================
-Entrypoint: Registration
-startRegistration
-	continuteRegistration
-		someRegistrationProcedure
-				calledInsideTracedFn
-	finishRegistration
-		calledInsideTracedFn
+Entrypoint: Database
+Database constructor
+	get
 	saveUser
 		post
+
+=======================
+Entrypoint: Registration
+startRegistration
+	processRegistration
+		someRegistrationProcedure
+			callInsideTracedFn
+	finishRegistration
+		callInsideTracedFn
 	cleanupSomething
 
 =======================
-Entrypoint: EmbeddedInRegistration
-someRegistrationProcedure
-	calledInsideTracedFn
+Entrypoint: OuterEntrypoint
+begin
+	funcA
+	beingNestedEntrypoint
+			funcA
+			funcB
+	funcB
+
+=======================
+Entrypoint: NestedEntrypoint
+beingNestedEntrypoint
+	funcA
+	funcB
 
 =======================
 Entrypoint: InfiniteSelfRecursion
@@ -28,10 +43,6 @@ Entrypoint: IndirectInfiniteSelfRecursion
 indirectInfiniteSelfRecursion
 	makeIndirectRecursiveCall
 		indirectInfiniteSelfRecursion
-
-=======================
-Entrypoint: Database
-Database constructor
 
 "
 `;
