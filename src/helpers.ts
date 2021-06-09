@@ -6,12 +6,11 @@ export function constructorClassName(cons: ConstructorDeclaration) {
 
 export function getDefinitionNodeOrThrow(ident: Identifier) {
   const definition = ident.getDefinitionNodes()[0];
-  const calledFunc =
+  const callee =
     definition.asKind(SyntaxKind.FunctionDeclaration) ||
     definition.asKind(SyntaxKind.MethodDeclaration);
 
-  if (!calledFunc)
-    throw new Error(`No definition found for ${ident.getText()}`);
+  if (!callee) throw new Error(`No definition found for ${ident.getText()}`);
 
-  return calledFunc;
+  return callee;
 }
