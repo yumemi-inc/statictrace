@@ -60,7 +60,6 @@ function traceFunctionRecursive(
         ? firstChild.getLastChildByKindOrThrow(SyntaxKind.Identifier)
         : firstChild.asKindOrThrow(SyntaxKind.Identifier);
 
-      // Should not throw if the file is type-checked.
       const callee = getDefinitionNode(identifier);
 
       if (callee && isTraced(callee)) {
