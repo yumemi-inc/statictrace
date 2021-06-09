@@ -96,7 +96,7 @@ function traceFunctionRecursive(
 
           traceFunctionRecursive(entrypoints, entrypointText, callee);
 
-          // Save traversal result (with adjusted levels) so we don't have to traverse this nested entrypoint again.
+          // Adjust levels and save traversal result so we don't have to traverse this nested entrypoint again.
           tracedCalls.push(
             ...entrypoints.get(entrypointText)!.map((ep) => {
               return { ...ep, level: ep.level + level + 1 };
