@@ -6,40 +6,38 @@ import {
   SyntaxKind,
   Node,
 } from "ts-morph";
-import { constructorClassName, getDefinitionNodeOrThrow } from "./helpers";
-
-type Entrypoint = string;
-type TracedCall = { name: string; level: number };
-type Entrypoints = Map<Entrypoint, Array<TracedCall>>;
+import {
+  constructorClassName,
+  getDefinitionNodeOrThrow,
+  getEntrypointTag,
+  getEntrypointText,
+} from "./helpers";
+import { Entrypoints, CallableDeclaration } from "./types";
 
 function traceEntrypoints(
   entrypoints: Entrypoints,
-  functions:
-    | FunctionDeclaration[]
-    | MethodDeclaration[]
-    | ConstructorDeclaration[]
+  functions: Array<CallableDeclaration>
 ) {
   for (const func of functions) {
-    const signature = func.getSignature();
-    const annotations = signature.getJsDocTags();
-    const entrypointTag = annotations.find(
-      (tag) => tag.getName() == "entrypoint"
-    );
+    const entrypointTag = getEntrypointTag(func);
 
     if (entrypointTag) {
-      const { text } = entrypointTag.getText()[0]; // Represents text in /** @entrypoint text */.
+      const text = getEntrypointText(entrypointTag); // Represents text in /** @entrypoint text */.
 
-      // No traced functions are anonymous.
-      entrypoints.set(text, [
-        {
-          name: Node.isConstructorDeclaration(func)
-            ? `${constructorClassName(func)} constructor`
-            : func.getName()!,
-          level: 0,
-        },
-      ]);
+      // Skip (nested) entrypoints that were found (& cached) in previously traversed functions.
+      if (!entrypoints.has(text)) {
+        // No traced functions are anonymous.
+        entrypoints.set(text, [
+          {
+            name: Node.isConstructorDeclaration(func)
+              ? `${constructorClassName(func)} constructor`
+              : func.getName()!,
+            level: 0,
+          },
+        ]);
 
-      traceFunctionRecursive(entrypoints, text, func);
+        traceFunctionRecursive(entrypoints, text, func, 1);
+      }
     }
   }
 }
@@ -48,7 +46,7 @@ function traceFunctionRecursive(
   entrypoints: Entrypoints,
   entrypoint: string,
   func: FunctionDeclaration | MethodDeclaration | ConstructorDeclaration,
-  level: number = 0
+  level: number = 1
 ) {
   for (const call of func.getDescendantsOfKind(SyntaxKind.CallExpression)) {
     const firstChild = call.getFirstChild();
@@ -68,8 +66,31 @@ function traceFunctionRecursive(
 
         tracedCalls.push({ name: callee.getName()!, level });
 
-        // Recurse until the function stops calling other functions.
-        traceFunctionRecursive(entrypoints, entrypoint, callee, level + 1);
+        // Check if this is a nested entrypoint.
+        const selfEntrypoint = getEntrypointTag(callee);
+
+        if (selfEntrypoint) {
+          const entrypointText = getEntrypointText(selfEntrypoint);
+
+          entrypoints.set(entrypointText, [
+            {
+              name: callee.getName()!,
+              level: 0,
+            },
+          ]);
+
+          traceFunctionRecursive(entrypoints, entrypointText, callee);
+
+          // Save traversal result (with adjusted levels) so we don't have to traverse this nested entrypoint again.
+          tracedCalls.push(
+            ...entrypoints.get(entrypointText)!.map((ep) => {
+              return { ...ep, level: ep.level + level + 1 };
+            })
+          );
+        } else {
+          // Recurse until the function stops calling other functions.
+          traceFunctionRecursive(entrypoints, entrypoint, callee, level + 1);
+        }
       }
     }
   }
