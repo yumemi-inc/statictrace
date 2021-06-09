@@ -84,7 +84,7 @@ function traceFunctionRecursive(
         if (selfEntrypoint) {
           const entrypointText = getEntrypointText(selfEntrypoint);
 
-          // Prevent indirect infinite recursion.
+          // Prevent indirect infinite recursion (= entrypoint is already initialized)
           if (entrypoints.has(entrypointText)) continue;
 
           entrypoints.set(entrypointText, [
