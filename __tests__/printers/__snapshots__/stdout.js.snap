@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Prints to stdout correctly 1`] = `
+"=======================
+Entrypoint: Registration
+startRegistration
+	continuteRegistration
+		someRegistrationProcedure
+				calledInsideTracedFn
+	finishRegistration
+		calledInsideTracedFn
+	saveUser
+		post
+	cleanupSomething
+
+=======================
+Entrypoint: EmbeddedInRegistration
+someRegistrationProcedure
+	calledInsideTracedFn
+
+=======================
+Entrypoint: InfiniteSelfRecursion
+infiniteSelfRecursion
+	infiniteSelfRecursion
+
+=======================
+Entrypoint: IndirectInfiniteSelfRecursion
+indirectInfiniteSelfRecursion
+	makeIndirectRecursiveCall
+		indirectInfiniteSelfRecursion
+
+=======================
+Entrypoint: Database
+Database constructor
+
+"
+`;

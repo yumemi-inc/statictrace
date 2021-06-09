@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/lib.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "watch": "tsc -w",
     "parse": "node build/lib.js"
   },

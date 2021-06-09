@@ -5,7 +5,7 @@ import { Parser } from "./parse";
 
 dotenv.config();
 
-function run(config: string) {
+export function run(config: string) {
   const parser = new Parser(config);
   parser.parse();
   return parser.print();
