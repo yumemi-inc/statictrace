@@ -43,6 +43,6 @@ export function getEntrypointText(tag: JSDocTagInfo) {
 
 export function getCallableName(callable: CallableDeclaration) {
   return Node.isConstructorDeclaration(callable)
-    ? `constructor`
+    ? `${constructorClassName(callable)} constructor`
     : callable.getName()!;
 }

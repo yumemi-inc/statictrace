@@ -31,9 +31,7 @@ function traceEntrypoints(
         // No traced functions are anonymous.
         entrypoints.set(text, [
           {
-            name: Node.isConstructorDeclaration(func)
-              ? `${constructorClassName(func)} constructor`
-              : func.getName()!,
+            name: getCallableName(func),
             level: 0,
           },
         ]);
