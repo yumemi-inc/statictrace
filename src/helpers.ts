@@ -4,6 +4,8 @@ import {
   JSDocTagInfo,
   SyntaxKind,
   Node,
+  FunctionDeclaration,
+  MethodDeclaration,
 } from "ts-morph";
 import { CallableDeclaration } from "./types";
 
@@ -11,15 +13,21 @@ export function constructorClassName(cons: ConstructorDeclaration) {
   return cons.getParentIfKindOrThrow(SyntaxKind.ClassDeclaration).getName();
 }
 
-export function getDefinitionNodeOrThrow(ident: Identifier) {
-  const definition = ident.getDefinitionNodes()[0];
-  const callee =
-    definition.asKind(SyntaxKind.FunctionDeclaration) ||
-    definition.asKind(SyntaxKind.MethodDeclaration);
+export function getDefinitionNode(
+  ident: Identifier
+): FunctionDeclaration | MethodDeclaration | null {
+  for (const def of ident.getDefinitionNodes()) {
+    const callee =
+      def.asKind(SyntaxKind.FunctionDeclaration) ||
+      def.asKind(SyntaxKind.MethodDeclaration);
 
-  if (!callee) throw new Error(`No definition found for ${ident.getText()}`);
+    if (callee) {
+      return callee;
+    }
+  }
 
-  return callee;
+  // No definition found: this could be a standard library function like .map() or .bind().
+  return null;
 }
 
 export function getEntrypointTag(func: CallableDeclaration) {

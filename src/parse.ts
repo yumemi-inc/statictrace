@@ -8,7 +8,7 @@ import {
 import {
   constructorClassName,
   getCallableName,
-  getDefinitionNodeOrThrow,
+  getDefinitionNode,
   getEntrypointTag,
   getEntrypointText,
 } from "./helpers";
@@ -54,8 +54,6 @@ function traceFunctionRecursive(
     throw new Error(`Exceeded maximum call depth (${MAX_CALL_DEPTH})`);
   }
 
-  console.log(level, getCallableName(func));
-
   for (const call of func.getDescendantsOfKind(SyntaxKind.CallExpression)) {
     const firstChild = call.getFirstChild();
 
@@ -66,9 +64,9 @@ function traceFunctionRecursive(
         : firstChild.asKindOrThrow(SyntaxKind.Identifier);
 
       // Should not throw if the file is type-checked.
-      const callee = getDefinitionNodeOrThrow(identifier);
+      const callee = getDefinitionNode(identifier);
 
-      if (isTraced(callee)) {
+      if (callee && isTraced(callee)) {
         // Entrypoint is guaranteed to exist.
         const tracedCalls = entrypoints.get(entrypoint)!;
 
