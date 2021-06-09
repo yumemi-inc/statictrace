@@ -1,15 +1,13 @@
 import {
   ConstructorDeclaration,
   FunctionDeclaration,
-  Identifier,
   MethodDeclaration,
   Project,
   SyntaxKind,
   Node,
-  ts,
 } from "ts-morph";
 import { Command } from "commander";
-import { constructorClassName } from "./helpers";
+import { constructorClassName, getDefinitionNodeOrThrow } from "./helpers";
 
 import dotenv from "dotenv";
 
@@ -92,10 +90,12 @@ function traceFunctionRecursive(
     const firstChild = call.getFirstChild();
 
     if (firstChild) {
+      // getLastChildByKindOrThrow works well in cases of deep property access (see AST).
       const identifier = Node.isPropertyAccessExpression(firstChild)
         ? firstChild.getLastChildByKindOrThrow(SyntaxKind.Identifier)
         : firstChild.asKindOrThrow(SyntaxKind.Identifier);
 
+      // Should not throw if the file is type-checked.
       const callee = getDefinitionNodeOrThrow(identifier);
 
       if (isTraced(callee)) {
@@ -116,16 +116,4 @@ for (const [ep, tracedCalls] of entrypoints.entries()) {
   for (const call of tracedCalls) {
     console.log("\t".repeat(call.level), call.name);
   }
-}
-
-function getDefinitionNodeOrThrow(ident: Identifier) {
-  const definition = ident.getDefinitionNodes()[0];
-  const calledFunc =
-    definition.asKind(SyntaxKind.FunctionDeclaration) ||
-    definition.asKind(SyntaxKind.MethodDeclaration);
-
-  if (!calledFunc)
-    throw new Error(`No definition found for ${ident.getText()}`);
-
-  return calledFunc;
 }
