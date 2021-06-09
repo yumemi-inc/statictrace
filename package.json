@@ -15,7 +15,7 @@
   },
   "keywords": [],
   "author": "Kirill Vasiltsov",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/jlkiri/statictrace/issues"
   },
