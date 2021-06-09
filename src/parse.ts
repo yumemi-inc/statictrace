@@ -109,10 +109,12 @@ export class Parser {
 
   print() {
     for (const [ep, tracedCalls] of this.entrypoints.entries()) {
+      console.log("=======================");
       console.log("Entrypoint: ", ep, "\n");
       for (const call of tracedCalls) {
         console.log("\t".repeat(call.level), call.name);
       }
+      console.log("\n");
     }
   }
 }
