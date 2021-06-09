@@ -28,7 +28,6 @@ function traceEntrypoints(
 
       // Skip (nested) entrypoints that were found (& cached) in previously traversed functions.
       if (!entrypoints.has(text)) {
-        // No traced functions are anonymous.
         entrypoints.set(text, [
           {
             name: getCallableName(func),
