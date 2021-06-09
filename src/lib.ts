@@ -5,14 +5,21 @@ import { Parser } from "./parse";
 
 dotenv.config();
 
-const program = new Command();
-program.option("-p, --project <path>", "path to a tsconfig.json file");
-program.parse();
+function run(config: string) {
+  const parser = new Parser(config);
+  parser.parse();
+  return parser.print();
+}
 
-const projectConfig = program.opts()["project"];
-const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
+// True if run as a CLI application direcly
+if (require.main === module) {
+  const program = new Command();
+  program.option("-p, --project <path>", "path to a tsconfig.json file");
+  program.parse();
 
-const parser = new Parser(tsConfigFilePath);
+  const projectConfig = program.opts()["project"];
+  const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
 
-parser.parse();
-parser.print();
+  const output = run(tsConfigFilePath);
+  console.log(output);
+}

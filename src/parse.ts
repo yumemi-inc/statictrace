@@ -138,13 +138,17 @@ export class Parser {
   }
 
   print() {
+    let output = "";
+
     for (const [ep, tracedCalls] of this.entrypoints.entries()) {
-      console.log("=======================");
-      console.log("Entrypoint: ", ep, "\n");
+      output += "=======================\n";
+      output += "Entrypoint: " + ep + "\n";
       for (const call of tracedCalls) {
-        console.log("\t".repeat(call.level), call.name);
+        output += "\t".repeat(call.level) + call.name + "\n";
       }
-      console.log("\n");
+      output += "\n";
     }
+
+    return output;
   }
 }
