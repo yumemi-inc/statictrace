@@ -57,3 +57,11 @@ class Database {
     this.db.post(user);
   }
 }
+
+/**
+ * @entrypoint InfiniteSelfRecursion
+ * @trace
+ */
+function selfRecursiveFunction() {
+  selfRecursiveFunction();
+}
