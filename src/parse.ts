@@ -6,44 +6,14 @@ import {
   SyntaxKind,
   Node,
 } from "ts-morph";
-import { Command } from "commander";
 import { constructorClassName, getDefinitionNodeOrThrow } from "./helpers";
-
-import dotenv from "dotenv";
-
-dotenv.config();
 
 type Entrypoint = string;
 type TracedCall = { name: string; level: number };
 type Entrypoints = Map<Entrypoint, Array<TracedCall>>;
 
-const program = new Command();
-program.option("-p, --project <path>", "path to a tsconfig.json file");
-program.parse();
-
-const projectConfig = program.opts()["project"];
-const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
-
-const project = new Project({
-  tsConfigFilePath,
-  libFolderPath: "./node_modules/typescript",
-});
-
-const entrypoints: Entrypoints = new Map();
-
-for (const sourceFile of project.getSourceFiles()) {
-  const functions = sourceFile.getFunctions();
-  const classes = sourceFile.getClasses();
-
-  traceEntrypoints(functions);
-
-  for (const clazz of classes) {
-    traceEntrypoints(clazz.getConstructors());
-    traceEntrypoints(clazz.getMethods());
-  }
-}
-
 function traceEntrypoints(
+  entrypoints: Entrypoints,
   functions:
     | FunctionDeclaration[]
     | MethodDeclaration[]
@@ -72,12 +42,6 @@ function traceEntrypoints(
       traceFunctionRecursive(entrypoints, text, func);
     }
   }
-}
-
-function isTraced(func: FunctionDeclaration | MethodDeclaration) {
-  const signature = func.getSignature();
-  const annotations = signature.getJsDocTags();
-  return annotations.find((tag) => tag.getName() == "trace");
 }
 
 function traceFunctionRecursive(
@@ -111,9 +75,44 @@ function traceFunctionRecursive(
   }
 }
 
-for (const [ep, tracedCalls] of entrypoints.entries()) {
-  console.log("Entrypoint: ", ep, "\n");
-  for (const call of tracedCalls) {
-    console.log("\t".repeat(call.level), call.name);
+function isTraced(func: FunctionDeclaration | MethodDeclaration) {
+  const signature = func.getSignature();
+  const annotations = signature.getJsDocTags();
+  return annotations.find((tag) => tag.getName() == "trace");
+}
+
+export class Parser {
+  project: Project;
+  entrypoints: Entrypoints;
+
+  constructor(tsConfigFilePath: string) {
+    this.project = new Project({
+      tsConfigFilePath,
+      libFolderPath: "./node_modules/typescript",
+    });
+    this.entrypoints = new Map();
+  }
+
+  parse() {
+    for (const sourceFile of this.project.getSourceFiles()) {
+      const functions = sourceFile.getFunctions();
+      const classes = sourceFile.getClasses();
+
+      traceEntrypoints(this.entrypoints, functions);
+
+      for (const clazz of classes) {
+        traceEntrypoints(this.entrypoints, clazz.getConstructors());
+        traceEntrypoints(this.entrypoints, clazz.getMethods());
+      }
+    }
+  }
+
+  print() {
+    for (const [ep, tracedCalls] of this.entrypoints.entries()) {
+      console.log("Entrypoint: ", ep, "\n");
+      for (const call of tracedCalls) {
+        console.log("\t".repeat(call.level), call.name);
+      }
+    }
   }
 }
