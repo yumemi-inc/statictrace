@@ -1,6 +1,6 @@
 /** @trace */
 function continuteRegistration() {
-  calledDuringRegistration();
+  someRegistrationProcedure();
 }
 
 /**
@@ -12,7 +12,7 @@ function startRegistration() {
   continuteRegistration();
   finishRegistration();
 
-  db.saveUser({});
+  db.saveUser({ user: "Test" });
 
   untracedFunction();
   cleanupSomething();
@@ -23,43 +23,35 @@ function cleanupSomething() {}
 
 /** @trace */
 function finishRegistration() {
-  tracedDeepCall();
+  calledInsideTracedFn();
 }
 
 /** @trace */
-function calledDuringRegistration() {
-  anotherTracedDeepCall();
-  untracedDeepCall();
+function someRegistrationProcedure() {
+  calledInsideTracedFn();
+  untracedFunction();
 }
 
 /** @trace */
-function tracedDeepCall() {}
-
-function untracedDeepCall() {}
-
-/** @trace */
-function anotherTracedDeepCall() {}
-
-function startPurchase() {}
-
-function continuePurchase() {}
-
-function finishPurchase() {}
+function calledInsideTracedFn() {}
 
 function untracedFunction() {}
 
-interface DB {
-  save(thing: any): void;
+class DbInterface {
+  /** @trace */
+  post(user: any) {}
 }
 
 class Database {
-  db: DB = {
-    /** @trace */
-    save() {},
-  };
+  db: DbInterface;
+
+  /** @entrypoint Db */
+  constructor() {
+    this.db = new DbInterface();
+  }
 
   /** @trace */
   saveUser(user: any) {
-    this.db.save(user);
+    this.db.post(user);
   }
 }

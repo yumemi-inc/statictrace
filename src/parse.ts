@@ -6,8 +6,10 @@ import {
   Project,
   SyntaxKind,
   Node,
+  ts,
 } from "ts-morph";
 import { Command } from "commander";
+import { constructorClassName } from "./helpers";
 
 import dotenv from "dotenv";
 
@@ -63,7 +65,7 @@ function traceEntrypoints(
       entrypoints.set(text, [
         {
           name: Node.isConstructorDeclaration(func)
-            ? "constructor"
+            ? `${constructorClassName(func)} constructor`
             : func.getName()!,
           level: 0,
         },
@@ -86,40 +88,24 @@ function traceFunctionRecursive(
   func: FunctionDeclaration | MethodDeclaration | ConstructorDeclaration,
   level: number = 0
 ) {
-  function getDefinitionsFromIdentifier(identifier: Identifier | undefined) {
-    try {
-      return identifier?.getDefinitions() ?? [];
-    } catch (e) {
-      console.error(
-        "An internal error occurred at getDefinitionsFromIdentifier: entrypoint = %s, func = %s",
-        entrypoint,
-        Node.isConstructorDeclaration(func) ? "constructor" : func.getKindName()
-      );
-      return [];
-    }
-  }
-
   for (const call of func.getDescendantsOfKind(SyntaxKind.CallExpression)) {
-    const ident =
-      call.getFirstChildByKind(SyntaxKind.Identifier) ||
-      call
-        .getFirstChildByKind(SyntaxKind.PropertyAccessExpression)
-        ?.getFirstChildByKindOrThrow(SyntaxKind.Identifier);
+    const firstChild = call.getFirstChild();
 
-    for (const definition of getDefinitionsFromIdentifier(ident)) {
-      const declNode = definition.getDeclarationNode()!;
-      const calledFunc =
-        declNode.asKind(SyntaxKind.FunctionDeclaration) ||
-        declNode.asKind(SyntaxKind.MethodDeclaration);
+    if (firstChild) {
+      const identifier = Node.isPropertyAccessExpression(firstChild)
+        ? firstChild.getLastChildByKindOrThrow(SyntaxKind.Identifier)
+        : firstChild.asKindOrThrow(SyntaxKind.Identifier);
 
-      if (calledFunc && isTraced(calledFunc)) {
+      const callee = getDefinitionNodeOrThrow(identifier);
+
+      if (isTraced(callee)) {
         // Entrypoint is guaranteed to exist.
         const tracedCalls = entrypoints.get(entrypoint)!;
 
-        tracedCalls.push({ name: calledFunc.getName()!, level });
+        tracedCalls.push({ name: callee.getName()!, level });
 
         // Recurse until the function stops calling other functions.
-        traceFunctionRecursive(entrypoints, entrypoint, calledFunc, level + 1);
+        traceFunctionRecursive(entrypoints, entrypoint, callee, level + 1);
       }
     }
   }
@@ -130,4 +116,16 @@ for (const [ep, tracedCalls] of entrypoints.entries()) {
   for (const call of tracedCalls) {
     console.log("\t".repeat(call.level), call.name);
   }
+}
+
+function getDefinitionNodeOrThrow(ident: Identifier) {
+  const definition = ident.getDefinitionNodes()[0];
+  const calledFunc =
+    definition.asKind(SyntaxKind.FunctionDeclaration) ||
+    definition.asKind(SyntaxKind.MethodDeclaration);
+
+  if (!calledFunc)
+    throw new Error(`No definition found for ${ident.getText()}`);
+
+  return calledFunc;
 }
