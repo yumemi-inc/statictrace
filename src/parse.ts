@@ -1,5 +1,4 @@
 import {
-  ConstructorDeclaration,
   FunctionDeclaration,
   MethodDeclaration,
   Project,
@@ -8,11 +7,14 @@ import {
 } from "ts-morph";
 import {
   constructorClassName,
+  getCallableName,
   getDefinitionNodeOrThrow,
   getEntrypointTag,
   getEntrypointText,
 } from "./helpers";
 import { Entrypoints, CallableDeclaration } from "./types";
+
+const MAX_CALL_DEPTH = 50;
 
 function traceEntrypoints(
   entrypoints: Entrypoints,
@@ -36,7 +38,7 @@ function traceEntrypoints(
           },
         ]);
 
-        traceFunctionRecursive(entrypoints, text, func, 1);
+        traceFunctionRecursive(entrypoints, text, func);
       }
     }
   }
@@ -45,9 +47,15 @@ function traceEntrypoints(
 function traceFunctionRecursive(
   entrypoints: Entrypoints,
   entrypoint: string,
-  func: FunctionDeclaration | MethodDeclaration | ConstructorDeclaration,
+  func: CallableDeclaration,
   level: number = 1
 ) {
+  if (level >= MAX_CALL_DEPTH) {
+    throw new Error(`Exceeded maximum call depth (${MAX_CALL_DEPTH})`);
+  }
+
+  console.log(level, getCallableName(func));
+
   for (const call of func.getDescendantsOfKind(SyntaxKind.CallExpression)) {
     const firstChild = call.getFirstChild();
 
@@ -68,9 +76,16 @@ function traceFunctionRecursive(
 
         // Check if this is a nested entrypoint.
         const selfEntrypoint = getEntrypointTag(callee);
+        const enclosingFnName = getCallableName(func);
+
+        // Prevent infinite recursion.
+        if (callee.getName()! == enclosingFnName) continue;
 
         if (selfEntrypoint) {
           const entrypointText = getEntrypointText(selfEntrypoint);
+
+          // Prevent indirect infinite recursion.
+          if (entrypoints.has(entrypointText)) continue;
 
           entrypoints.set(entrypointText, [
             {

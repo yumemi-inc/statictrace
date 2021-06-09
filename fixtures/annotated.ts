@@ -62,6 +62,21 @@ class Database {
  * @entrypoint InfiniteSelfRecursion
  * @trace
  */
-function selfRecursiveFunction() {
-  selfRecursiveFunction();
+function infiniteSelfRecursion() {
+  infiniteSelfRecursion();
+}
+
+/**
+ * @entrypoint IndirectInfiniteSelfRecursion
+ * @trace
+ */
+function indirectInfiniteSelfRecursion() {
+  makeIndirectRecursiveCall();
+}
+
+/**
+ * @trace
+ */
+function makeIndirectRecursiveCall() {
+  indirectInfiniteSelfRecursion();
 }

@@ -3,6 +3,7 @@ import {
   Identifier,
   JSDocTagInfo,
   SyntaxKind,
+  Node,
 } from "ts-morph";
 import { CallableDeclaration } from "./types";
 
@@ -30,4 +31,10 @@ export function getEntrypointTag(func: CallableDeclaration) {
 export function getEntrypointText(tag: JSDocTagInfo) {
   const { text } = tag.getText()[0];
   return text;
+}
+
+export function getCallableName(callable: CallableDeclaration) {
+  return Node.isConstructorDeclaration(callable)
+    ? `constructor`
+    : callable.getName()!;
 }
