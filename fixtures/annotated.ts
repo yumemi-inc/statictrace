@@ -26,7 +26,9 @@ function finishRegistration() {
   calledInsideTracedFn();
 }
 
-/** @trace */
+/**
+ * @entrypoint EmbeddedInRegistration
+ * @trace */
 function someRegistrationProcedure() {
   calledInsideTracedFn();
   untracedFunction();
@@ -45,7 +47,7 @@ class DbInterface {
 class Database {
   db: DbInterface;
 
-  /** @entrypoint Db */
+  /** @entrypoint Database */
   constructor() {
     this.db = new DbInterface();
   }
