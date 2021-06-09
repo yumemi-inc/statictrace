@@ -6,7 +6,6 @@ import {
   Node,
 } from "ts-morph";
 import {
-  constructorClassName,
   getCallableName,
   getDefinitionNode,
   getEntrypointTag,
@@ -92,9 +91,12 @@ function traceFunctionRecursive(
 
           // Adjust levels and save traversal result so we don't have to traverse this nested entrypoint again.
           tracedCalls.push(
-            ...entrypoints.get(entrypointText)!.map((ep) => {
-              return { ...ep, level: ep.level + level + 1 };
-            })
+            ...entrypoints
+              .get(entrypointText)!
+              .slice(1)
+              .map((ep) => {
+                return { ...ep, level: ep.level + level + 1 };
+              })
           );
         } else {
           // Recurse until the function stops calling other functions.
