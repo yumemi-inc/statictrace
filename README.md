@@ -40,7 +40,7 @@ const output = run("/absolute/path/to/tsconfig.json");
 // ...do something with output
 ```
 
-### `run(pathToTsConfig: string, printer?: Printer): any`
+#### `run(pathToTsConfig: string, printer?: Printer): any`
 
 全てのプロジェクトのファイルをロードし、`@entrypoint`か`@trace`でマークされている全ての関数のコールのグラフを作る。`Printer`は、グラフをプリント（なんらかの方法で表示できる）ことを表すインターフェースで、そのインターフェースを implement したものならなんでもオプショナルな引数として渡すことができます。何も渡さなかった場合は、解析の結果を`TextPrinter`が文字列として戻します。
 

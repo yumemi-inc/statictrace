@@ -40,7 +40,7 @@ const output = run("/absolute/path/to/tsconfig.json");
 // ...do something with output
 ```
 
-### run(pathToTsConfig: string, printer?: Printer)
+#### `run(pathToTsConfig: string, printer?: Printer): any`
 
 Load all project files and build a graph of all function calls marked with `@entrypoint` or `@trace` tags. You can optionally pass a `Printer` as a second argument. A `Printer` is an interface that represents anything that can print (display in one way or another) the result of parsing. You can use anything that implements this interface. If you don't provide a second argument, a default `TextPrinter` returns the result as a string.
 
