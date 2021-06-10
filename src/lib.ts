@@ -5,8 +5,6 @@ import { Parser } from "./parse";
 import { StdoutPrinter } from "./printer";
 import { Printer } from "./types";
 
-dotenv.config();
-
 export function run(config: string, printer: Printer = new StdoutPrinter()) {
   const parser = new Parser(config);
   parser.parse();
@@ -15,6 +13,8 @@ export function run(config: string, printer: Printer = new StdoutPrinter()) {
 
 // True if run as a CLI application direcly
 if (require.main === module) {
+  dotenv.config();
+
   const program = new Command();
   program.option("-p, --project <path>", "path to a tsconfig.json file");
   program.parse();
