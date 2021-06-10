@@ -7,7 +7,8 @@
     "test": "jest",
     "test:update": "jest --updateSnapshot",
     "watch": "tsc -w",
-    "parse": "node build/lib.js"
+    "parse": "node build/lib.js",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
