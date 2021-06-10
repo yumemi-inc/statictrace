@@ -28,6 +28,10 @@ pnpm run parse -- -p /absolute/path/to/tsconfig.json
 
 `.env`ファイルを作成し、`TS_PROJECT_CONFIG`環境変数を定義することで、`-p`オプションは省略できます。
 
+```
+TS_PROJECT_CONFIG=/absolute/path/to/tsconfig.json
+```
+
 ### Use API programmatically
 
 ```js
