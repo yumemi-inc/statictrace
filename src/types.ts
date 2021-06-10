@@ -16,7 +16,7 @@ export type CallableDeclaration =
 export type Printable = Entrypoints;
 
 export interface Printer {
-  print(graph: Printable): any;
+  print(graph: Into<Printable>): any;
 }
 
 export interface Into<T> {

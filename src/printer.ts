@@ -1,10 +1,11 @@
-import { Printable, Printer } from "./types";
+import { Into, Printable, Printer } from "./types";
 
 export class StdoutPrinter implements Printer {
-  print(entrypointGraph: Printable) {
+  print(entrypointGraph: Into<Printable>) {
+    const printable = entrypointGraph.into();
     let output = "";
 
-    for (const [ep, tracedCalls] of entrypointGraph.entries()) {
+    for (const [ep, tracedCalls] of printable.entries()) {
       output += "=======================\n";
       output += "Entrypoint: " + ep + "\n";
       for (const call of tracedCalls) {

@@ -141,6 +141,6 @@ export class Parser {
   }
 
   print(printer: Printer) {
-    return printer.print(this.entrypointGraph.into());
+    return printer.print(this.entrypointGraph);
   }
 }
