@@ -2,10 +2,10 @@ import { Command } from "commander";
 
 import dotenv from "dotenv";
 import { Parser } from "./parse";
-import { StdoutPrinter } from "./printer";
+import { TextPrinter } from "./printer";
 import { Printer } from "./types";
 
-export function run(config: string, printer: Printer = new StdoutPrinter()) {
+export function run(config: string, printer: Printer = new TextPrinter()) {
   const parser = new Parser(config);
   parser.parse();
   return parser.print(printer);
@@ -22,6 +22,5 @@ if (require.main === module) {
   const projectConfig = program.opts()["project"];
   const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
 
-  const output = run(tsConfigFilePath);
-  console.log(output);
+  console.log(run(tsConfigFilePath));
 }

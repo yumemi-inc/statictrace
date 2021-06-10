@@ -1,6 +1,6 @@
 import { Into, Printable, Printer } from "./types";
 
-export class StdoutPrinter implements Printer {
+export class TextPrinter implements Printer {
   print(entrypointGraph: Into<Printable>) {
     const printable = entrypointGraph.into();
     let output = "";
