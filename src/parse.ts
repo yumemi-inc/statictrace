@@ -1,15 +1,10 @@
-import {
-  FunctionDeclaration,
-  MethodDeclaration,
-  Project,
-  SyntaxKind,
-  Node,
-} from "ts-morph";
+import { Project, SyntaxKind, Node } from "ts-morph";
 import {
   getCallableName,
   getDefinitionNode,
   getEntrypointTag,
   getEntrypointText,
+  isTraced,
 } from "./helpers";
 import {
   Entrypoints,
@@ -117,12 +112,6 @@ function traceFunctionRecursive(
       }
     }
   }
-}
-
-function isTraced(func: FunctionDeclaration | MethodDeclaration) {
-  const signature = func.getSignature();
-  const annotations = signature.getJsDocTags();
-  return annotations.find((tag) => tag.getName() == "trace");
 }
 
 export class Parser {

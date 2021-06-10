@@ -47,3 +47,9 @@ export function getCallableName(callable: CallableDeclaration) {
     ? `${constructorClassName(callable)} constructor`
     : callable.getName()!;
 }
+
+export function isTraced(func: FunctionDeclaration | MethodDeclaration) {
+  const signature = func.getSignature();
+  const annotations = signature.getJsDocTags();
+  return annotations.find((tag) => tag.getName() == "trace");
+}
