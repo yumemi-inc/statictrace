@@ -11,9 +11,21 @@ import {
   getEntrypointTag,
   getEntrypointText,
 } from "./helpers";
-import { Entrypoints, CallableDeclaration } from "./types";
+import {
+  Entrypoints,
+  CallableDeclaration,
+  Printer,
+  Printable,
+  Into,
+} from "./types";
 
 const MAX_CALL_DEPTH = 50;
+
+class EntrypointGraph extends Map implements Into<Printable> {
+  into() {
+    return this;
+  }
+}
 
 function traceEntrypoints(
   entrypoints: Entrypoints,
@@ -115,14 +127,14 @@ function isTraced(func: FunctionDeclaration | MethodDeclaration) {
 
 export class Parser {
   project: Project;
-  entrypoints: Entrypoints;
+  entrypointGraph: EntrypointGraph;
 
   constructor(tsConfigFilePath: string) {
     this.project = new Project({
       tsConfigFilePath,
       libFolderPath: "./node_modules/typescript",
     });
-    this.entrypoints = new Map();
+    this.entrypointGraph = new EntrypointGraph();
   }
 
   parse() {
@@ -130,27 +142,16 @@ export class Parser {
       const functions = sourceFile.getFunctions();
       const classes = sourceFile.getClasses();
 
-      traceEntrypoints(this.entrypoints, functions);
+      traceEntrypoints(this.entrypointGraph, functions);
 
       for (const clazz of classes) {
-        traceEntrypoints(this.entrypoints, clazz.getConstructors());
-        traceEntrypoints(this.entrypoints, clazz.getMethods());
+        traceEntrypoints(this.entrypointGraph, clazz.getConstructors());
+        traceEntrypoints(this.entrypointGraph, clazz.getMethods());
       }
     }
   }
 
-  print() {
-    let output = "";
-
-    for (const [ep, tracedCalls] of this.entrypoints.entries()) {
-      output += "=======================\n";
-      output += "Entrypoint: " + ep + "\n";
-      for (const call of tracedCalls) {
-        output += "\t".repeat(call.level) + call.name + "\n";
-      }
-      output += "\n";
-    }
-
-    return output;
+  print(printer: Printer) {
+    return printer.print(this.entrypointGraph.into());
   }
 }

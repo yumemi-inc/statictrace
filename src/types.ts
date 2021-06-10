@@ -11,3 +11,14 @@ export type CallableDeclaration =
   | FunctionDeclaration
   | MethodDeclaration
   | ConstructorDeclaration;
+
+// Synonymous for now, potentially changeable in the future.
+export type Printable = Entrypoints;
+
+export interface Printer {
+  print(graph: Printable): any;
+}
+
+export interface Into<T> {
+  into(): T;
+}
