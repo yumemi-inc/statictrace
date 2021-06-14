@@ -1,16 +1,24 @@
 # statictrace
 
+[日本語](README.JP.md)
+
 ## Requirements
 
-Node.js 14.15.0 以上が動作する環境。
+Node.js 14.15.0 or later.
 
 ## Usage
 
-現在は、ソースからビルドする以外の使用方法がありません。
+Currently you can only use this tool by building it from source.
 
 ```
 pnpm install
 pnpm run build
+```
+
+With `ts-node`:
+
+```
+`pnpx ts-node src/lib.ts -p /absolute/path/to/tsconfig.json`
 ```
 
 ### Use as CLI
@@ -20,13 +28,7 @@ pnpm run build
 pnpm run parse -- -p /absolute/path/to/tsconfig.json
 ```
 
-`ts-node`の場合:
-
-```
-`pnpx ts-node src/lib.ts -p /absolute/path/to/tsconfig.json`
-```
-
-`.env`ファイルを作成し、`TS_PROJECT_CONFIG`環境変数を定義することで、`-p`オプションは省略できます。
+You can omit the `-p` option by creating an `.env` file with a `TS_PROJECT_CONFIG` variable.
 
 ```
 TS_PROJECT_CONFIG=/absolute/path/to/tsconfig.json
@@ -42,7 +44,7 @@ const output = run("/absolute/path/to/tsconfig.json");
 
 #### `run(pathToTsConfig: string, printer?: Printer): any`
 
-全てのプロジェクトのファイルをロードし、`@entrypoint`か`@trace`でマークされている全ての関数のコールのグラフを作る。`Printer`は、グラフをプリント（なんらかの方法で表示できる）ことを表すインターフェースで、そのインターフェースを implement したものならなんでもオプショナルな引数として渡すことができます。何も渡さなかった場合は、解析の結果を`TextPrinter`が文字列として戻します。
+Load all project files and build a graph of all function calls marked with `@entrypoint` or `@trace` tags. You can optionally pass a `Printer` as a second argument. A `Printer` is an interface that represents anything that can print (display in one way or another) the result of parsing. You can use anything that implements this interface. If you don't provide a second argument, a default `TextPrinter` returns the result as a string.
 
 ```ts
 interface Printer {
