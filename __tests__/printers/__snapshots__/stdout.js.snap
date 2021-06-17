@@ -45,8 +45,8 @@ Entrypoint: OuterEntrypoint
 begin
 	funcA
 	beingNestedEntrypoint
-			funcA
-			funcB
+		funcA
+		funcB
 	funcB
 
 =======================
