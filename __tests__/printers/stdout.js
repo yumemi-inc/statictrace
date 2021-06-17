@@ -19,7 +19,7 @@ class JsonPrinter {
     let obj = {};
     for (let fns of printable.values()) {
       for (let fn of fns) {
-        obj[fn.name] = fn.level;
+        obj[fn.name()] = fn.level();
       }
     }
     return JSON.stringify(obj, null, 2);
