@@ -2,10 +2,11 @@ import { Command } from 'commander';
 
 import dotenv from 'dotenv';
 import { Parser } from './parse';
-import { TextPrinter } from './printer';
+import { MermaidPrinter, TextPrinter } from './printer';
 import { Printer } from './types';
+import fs from 'fs';
 
-export function run(config: string, printer: Printer = new TextPrinter()) {
+export function run(config: string, printer: Printer = new MermaidPrinter()) {
   const parser = new Parser(config);
   parser.parse();
   return parser.print(printer);
@@ -22,5 +23,9 @@ if (require.main === module) {
   const projectConfig = program.opts()['project'];
   const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
 
-  console.log(run(tsConfigFilePath));
+  const result = run(tsConfigFilePath);
+
+  fs.writeFileSync('graphs.md', result);
+
+  // console.log();
 }
