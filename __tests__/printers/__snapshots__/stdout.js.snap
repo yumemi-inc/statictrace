@@ -13,7 +13,8 @@ exports[`Accepts custom printers 1`] = `
   \\"finishRegistration\\": 1,
   \\"cleanupSomething\\": 1,
   \\"begin\\": 0,
-  \\"funcA\\": 1,
+  \\"funcA\\": 0,
+  \\"funcC\\": 1,
   \\"beingNestedEntrypoint\\": 0,
   \\"funcB\\": 1,
   \\"infiniteSelfRecursion\\": 1,
@@ -44,8 +45,10 @@ startRegistration
 Entrypoint: OuterEntrypoint
 begin
 	funcA
+		funcC
 	beingNestedEntrypoint
 		funcA
+			funcC
 		funcB
 	funcB
 
@@ -53,7 +56,13 @@ begin
 Entrypoint: NestedEntrypoint
 beingNestedEntrypoint
 	funcA
+		funcC
 	funcB
+
+=======================
+Entrypoint: AnotherNestedEntrypoint
+funcA
+	funcC
 
 =======================
 Entrypoint: InfiniteSelfRecursion

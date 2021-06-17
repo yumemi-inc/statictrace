@@ -2,33 +2,38 @@ import { getCallableName } from "./helpers";
 import type { CallableDeclaration } from "./types";
 
 export class Environment {
-  _enclosing: Environment | null;
-  _name: string;
-  _declaration: CallableDeclaration;
+  #enclosing: Environment | null;
+  #name: string;
+  #declaration: CallableDeclaration;
 
   constructor(
     callable: CallableDeclaration,
     parent: Environment | null = null
   ) {
-    this._enclosing = parent;
-    this._declaration = callable;
-    this._name = getCallableName(callable);
+    this.#enclosing = parent;
+    this.#declaration = callable;
+    this.#name = getCallableName(callable);
   }
 
-  asRoot() {
-    return new Environment(this.decl());
+  hasAncestor(name: string) {
+    let parent = this.enclosing();
+    while (parent != null) {
+      if (parent.name() == name) return true;
+      parent = parent.enclosing();
+    }
+    return false;
   }
 
   enclosing() {
-    return this._enclosing;
+    return this.#enclosing;
   }
 
   name() {
-    return this._name;
+    return this.#name;
   }
 
   decl() {
-    return this._declaration;
+    return this.#declaration;
   }
 
   level() {

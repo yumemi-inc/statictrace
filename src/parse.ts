@@ -1,6 +1,5 @@
 import { Project, SyntaxKind, Node } from "ts-morph";
 import {
-  getCallableName,
   getDefinitionNode,
   getEntrypointTag,
   getEntrypointText,
@@ -73,36 +72,10 @@ function traceFunctionRecursive(
 
         tracedCalls.push(environment);
 
-        // Check if this is a nested entrypoint.
-        const selfEntrypoint = getEntrypointTag(environment.decl());
+        // Prevent infinite (including indirect) recursion.
+        if (environment.hasAncestor(environment.name())) continue;
 
-        // Prevent infinite recursion.
-        if (environment.name() == parent.name()) continue;
-
-        if (selfEntrypoint) {
-          const entrypointText = getEntrypointText(selfEntrypoint);
-
-          // Prevent indirect infinite recursion (= entrypoint is already initialized)
-          if (entrypoints.has(entrypointText)) continue;
-
-          const env = environment.asRoot();
-          entrypoints.set(entrypointText, [env]);
-
-          traceFunctionRecursive(entrypoints, entrypointText, env);
-
-          // Adjust levels and save traversal result so we don't have to traverse this nested entrypoint again.
-          tracedCalls.push(
-            ...entrypoints
-              .get(entrypointText)!
-              .slice(1)
-              .map((ev) => {
-                return new Environment(ev.decl(), environment);
-              })
-          );
-        } else {
-          // Recurse until the function stops calling other functions.
-          traceFunctionRecursive(entrypoints, root, environment);
-        }
+        traceFunctionRecursive(entrypoints, root, environment);
       }
     }
   }

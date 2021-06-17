@@ -3,7 +3,6 @@ import { Into, Printable, Printer } from "./types";
 export class TextPrinter implements Printer {
   print(entrypointGraph: Into<Printable>) {
     const printable = entrypointGraph.into();
-    // console.log(printable);
 
     let output = "";
 
