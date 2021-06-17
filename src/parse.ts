@@ -73,9 +73,9 @@ function traceFunctionRecursive(
         tracedCalls.push(environment);
 
         // Prevent infinite (including indirect) recursion.
-        if (environment.hasAncestor(environment.name())) continue;
-
-        traceFunctionRecursive(entrypoints, root, environment);
+        if (!environment.hasAncestor(environment.name())) {
+          traceFunctionRecursive(entrypoints, root, environment);
+        }
       }
     }
   }
