@@ -1,12 +1,12 @@
-import {
+import type {
   FunctionDeclaration,
   MethodDeclaration,
   ConstructorDeclaration,
 } from "ts-morph";
+import type { Environment } from "./struct";
 
 export type Entrypoint = string;
-export type TracedCall = { name: string; level: number };
-export type Entrypoints = Map<Entrypoint, Array<TracedCall>>;
+export type Entrypoints = Map<Entrypoint, Array<Environment>>;
 export type CallableDeclaration =
   | FunctionDeclaration
   | MethodDeclaration

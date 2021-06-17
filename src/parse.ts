@@ -6,6 +6,7 @@ import {
   getEntrypointText,
   isTraced,
 } from "./helpers";
+import { Environment } from "./struct";
 import {
   Entrypoints,
   CallableDeclaration,
@@ -34,14 +35,10 @@ function traceEntrypoints(
 
       // Skip (nested) entrypoints that were found (& cached) in previously traversed functions.
       if (!entrypoints.has(text)) {
-        entrypoints.set(text, [
-          {
-            name: getCallableName(func),
-            level: 0,
-          },
-        ]);
+        let environment = new Environment(func);
+        entrypoints.set(text, [environment]);
 
-        traceFunctionRecursive(entrypoints, text, func);
+        traceFunctionRecursive(entrypoints, text, environment);
       }
     }
   }
@@ -49,15 +46,16 @@ function traceEntrypoints(
 
 function traceFunctionRecursive(
   entrypoints: Entrypoints,
-  entrypoint: string,
-  func: CallableDeclaration,
-  level: number = 1
+  root: string,
+  parent: Environment
 ) {
-  if (level >= MAX_CALL_DEPTH) {
+  if (parent.level() >= MAX_CALL_DEPTH) {
     throw new Error(`Exceeded maximum call depth (${MAX_CALL_DEPTH})`);
   }
 
-  for (const call of func.getDescendantsOfKind(SyntaxKind.CallExpression)) {
+  for (const call of parent
+    .decl()
+    .getDescendantsOfKind(SyntaxKind.CallExpression)) {
     const firstChild = call.getFirstChild();
 
     if (firstChild) {
@@ -70,16 +68,16 @@ function traceFunctionRecursive(
 
       if (callee && isTraced(callee)) {
         // Entrypoint is guaranteed to exist.
-        const tracedCalls = entrypoints.get(entrypoint)!;
+        const tracedCalls = entrypoints.get(root)!;
+        const environment = new Environment(callee, parent);
 
-        tracedCalls.push({ name: callee.getName()!, level });
+        tracedCalls.push(environment);
 
         // Check if this is a nested entrypoint.
-        const selfEntrypoint = getEntrypointTag(callee);
-        const enclosingFnName = getCallableName(func);
+        const selfEntrypoint = getEntrypointTag(environment.decl());
 
         // Prevent infinite recursion.
-        if (callee.getName()! == enclosingFnName) continue;
+        if (environment.name() == parent.name()) continue;
 
         if (selfEntrypoint) {
           const entrypointText = getEntrypointText(selfEntrypoint);
@@ -87,27 +85,23 @@ function traceFunctionRecursive(
           // Prevent indirect infinite recursion (= entrypoint is already initialized)
           if (entrypoints.has(entrypointText)) continue;
 
-          entrypoints.set(entrypointText, [
-            {
-              name: callee.getName()!,
-              level: 0,
-            },
-          ]);
+          const env = environment.asRoot();
+          entrypoints.set(entrypointText, [env]);
 
-          traceFunctionRecursive(entrypoints, entrypointText, callee);
+          traceFunctionRecursive(entrypoints, entrypointText, env);
 
           // Adjust levels and save traversal result so we don't have to traverse this nested entrypoint again.
           tracedCalls.push(
             ...entrypoints
               .get(entrypointText)!
               .slice(1)
-              .map((ep) => {
-                return { ...ep, level: ep.level + level + 1 };
+              .map((ev) => {
+                return new Environment(ev.decl(), environment);
               })
           );
         } else {
           // Recurse until the function stops calling other functions.
-          traceFunctionRecursive(entrypoints, entrypoint, callee, level + 1);
+          traceFunctionRecursive(entrypoints, root, environment);
         }
       }
     }
