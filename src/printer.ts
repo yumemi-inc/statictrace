@@ -18,15 +18,3 @@ export class TextPrinter implements Printer {
     return output;
   }
 }
-
-/* export class MermaidPrinter implements Printer {
-  print(graph: Into<Printable>) {
-    const printable = graph.into();
-
-    let mermaidGraphs = [];
-
-    for (const [ep, calls] of printable.entries()) {
-      let arrows = lines.push();
-    }
-  }
-} */
