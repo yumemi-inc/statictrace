@@ -7,11 +7,10 @@ specifiers:
   jest: ^27.0.4
   prettier: ^2.3.1
   ts-morph: ^11.0.0
-  typescript: ^4.3.2
+  typescript: ~4.3.2
 
 dependencies:
   commander: 7.2.0
-  prettier: 2.3.1
   ts-morph: 11.0.0
   typescript: 4.3.2
 
@@ -19,6 +18,7 @@ devDependencies:
   '@types/node': 15.6.1
   dotenv: 10.0.0
   jest: 27.0.4
+  prettier: 2.3.1
 
 packages:
 
@@ -2236,7 +2236,7 @@ packages:
     resolution: {integrity: sha512-p+vNbgpLjif/+D+DwAZAbndtRrR0md0MwfmOVN9N+2RgyACMT+7tfaRnT+WDPkqnuVwleyuBIG2XBxKDme3hPA==}
     engines: {node: '>=10.13.0'}
     hasBin: true
-    dev: false
+    dev: true
 
   /pretty-format/27.0.2:
     resolution: {integrity: sha512-mXKbbBPnYTG7Yra9qFBtqj+IXcsvxsvOBco3QHxtxTl+hHKq6QdzMZ+q0CtL4ORHZgwGImRr2XZUX2EWzORxig==}
