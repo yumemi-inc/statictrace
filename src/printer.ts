@@ -23,21 +23,22 @@ export class MermaidPrinter implements Printer {
   print(graph: Into<Printable>) {
     const printable = graph.into();
 
-    let mermaidGraphs = [];
+    const mermaidGraphs = [];
 
     for (const [_, calls] of printable.entries()) {
-      let arrows = [];
+      // Use set to avoid meaningless duplicated arrows
+      const arrows = new Set();
       for (const call of calls) {
-        let enclosing = call.enclosing()
+        let enclosing = call.enclosing();
         if (enclosing != null) {
-          arrows.push(`\t${enclosing.name()} --> ${call.name()}\n`)
+          arrows.add(`\t${enclosing.name()} --> ${call.name()}\n`);
         }
       }
       mermaidGraphs.push(
-        `\`\`\`mermaid\ngraph TD\n${arrows.join("")}\`\`\``
-      )
+        `\`\`\`mermaid\ngraph TD\n${Array.from(arrows).join('')}\`\`\``
+      );
     }
 
-    return mermaidGraphs.join('\n')
+    return mermaidGraphs.join('\n');
   }
 }

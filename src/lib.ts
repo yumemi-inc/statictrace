@@ -18,6 +18,10 @@ if (require.main === module) {
 
   const program = new Command();
   program.option('-p, --project <path>', 'path to a tsconfig.json file');
+  program.option(
+    '-u, --use <printer>',
+    'use one of default printers (text, mermaid)'
+  );
   program.parse();
 
   const projectConfig = program.opts()['project'];
