@@ -1,9 +1,9 @@
 import type {
   FunctionDeclaration,
   MethodDeclaration,
-  ConstructorDeclaration,
-} from "ts-morph";
-import type { Environment } from "./struct";
+  ConstructorDeclaration
+} from 'ts-morph';
+import type { Environment } from './struct';
 
 export type Entrypoint = string;
 export type Entrypoints = Map<Entrypoint, Array<Environment>>;

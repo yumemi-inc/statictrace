@@ -1,5 +1,5 @@
-import { getCallableName } from "./helpers";
-import type { CallableDeclaration } from "./types";
+import { getCallableName } from './helpers';
+import type { CallableDeclaration } from './types';
 
 export class Environment {
   #enclosing: Environment | null;

@@ -1,18 +1,18 @@
-import { Project, SyntaxKind, Node } from "ts-morph";
+import { Project, SyntaxKind, Node } from 'ts-morph';
 import {
   getDefinitionNode,
   getEntrypointTag,
   getEntrypointText,
-  isTraced,
-} from "./helpers";
-import { Environment } from "./struct";
+  isTraced
+} from './helpers';
+import { Environment } from './struct';
 import {
   Entrypoints,
   CallableDeclaration,
   Printer,
   Printable,
-  Into,
-} from "./types";
+  Into
+} from './types';
 
 const MAX_CALL_DEPTH = 50;
 
@@ -88,7 +88,7 @@ export class Parser {
   constructor(tsConfigFilePath: string) {
     this.project = new Project({
       tsConfigFilePath,
-      libFolderPath: "./node_modules/typescript",
+      libFolderPath: './node_modules/typescript'
     });
     this.entrypointGraph = new EntrypointGraph();
   }

@@ -1,0 +1,4 @@
+build
+__tests__/**/__snapshots__
+node_modules
+pnpm-lock.yaml

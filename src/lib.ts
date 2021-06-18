@@ -1,9 +1,9 @@
-import { Command } from "commander";
+import { Command } from 'commander';
 
-import dotenv from "dotenv";
-import { Parser } from "./parse";
-import { TextPrinter } from "./printer";
-import { Printer } from "./types";
+import dotenv from 'dotenv';
+import { Parser } from './parse';
+import { TextPrinter } from './printer';
+import { Printer } from './types';
 
 export function run(config: string, printer: Printer = new TextPrinter()) {
   const parser = new Parser(config);
@@ -16,10 +16,10 @@ if (require.main === module) {
   dotenv.config();
 
   const program = new Command();
-  program.option("-p, --project <path>", "path to a tsconfig.json file");
+  program.option('-p, --project <path>', 'path to a tsconfig.json file');
   program.parse();
 
-  const projectConfig = program.opts()["project"];
+  const projectConfig = program.opts()['project'];
   const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
 
   console.log(run(tsConfigFilePath));

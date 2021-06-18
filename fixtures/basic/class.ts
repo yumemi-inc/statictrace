@@ -14,7 +14,7 @@ class Database {
   constructor() {
     this.db = new DbInterface();
     this.info = this.db.get();
-    this.saveUser({ name: "Cat" });
+    this.saveUser({ name: 'Cat' });
   }
 
   /** @trace */

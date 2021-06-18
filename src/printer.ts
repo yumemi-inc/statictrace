@@ -1,18 +1,18 @@
-import { Into, Printable, Printer } from "./types";
+import { Into, Printable, Printer } from './types';
 
 export class TextPrinter implements Printer {
   print(entrypointGraph: Into<Printable>) {
     const printable = entrypointGraph.into();
 
-    let output = "";
+    let output = '';
 
     for (const [ep, tracedCalls] of printable.entries()) {
-      output += "=======================\n";
-      output += "Entrypoint: " + ep + "\n";
+      output += '=======================\n';
+      output += 'Entrypoint: ' + ep + '\n';
       for (const call of tracedCalls) {
-        output += "\t".repeat(call.level()) + call.name() + "\n";
+        output += '\t'.repeat(call.level()) + call.name() + '\n';
       }
-      output += "\n";
+      output += '\n';
     }
 
     return output;

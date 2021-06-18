@@ -35,8 +35,8 @@ TS_PROJECT_CONFIG=/absolute/path/to/tsconfig.json
 ### Use API programmatically
 
 ```js
-const { run } = require("./build/lib");
-const output = run("/absolute/path/to/tsconfig.json");
+const { run } = require('./build/lib');
+const output = run('/absolute/path/to/tsconfig.json');
 // ...do something with output
 ```
 

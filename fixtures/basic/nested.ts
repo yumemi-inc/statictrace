@@ -15,11 +15,11 @@ function beingNestedEntrypoint() {
   funcB();
 }
 
-/** 
+/**
  * @entrypoint AnotherNestedEntrypoint
  * @trace */
 function funcA() {
-  funcC()
+  funcC();
 }
 
 /** @trace */

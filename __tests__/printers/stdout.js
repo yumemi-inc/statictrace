@@ -1,14 +1,14 @@
-const { run } = require("../../build/lib");
-const dotenv = require("dotenv");
+const { run } = require('../../build/lib');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
-it("Prints to stdout correctly", () => {
+it('Prints to stdout correctly', () => {
   const output = run(process.env.TS_PROJECT_TEST_CONFIG);
   expect(output).toMatchSnapshot();
 });
 
-it("Accepts custom printers", () => {
+it('Accepts custom printers', () => {
   const output = run(process.env.TS_PROJECT_TEST_CONFIG, new JsonPrinter());
   expect(output).toMatchSnapshot();
 });

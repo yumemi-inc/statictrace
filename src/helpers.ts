@@ -5,9 +5,9 @@ import {
   SyntaxKind,
   Node,
   FunctionDeclaration,
-  MethodDeclaration,
-} from "ts-morph";
-import { CallableDeclaration } from "./types";
+  MethodDeclaration
+} from 'ts-morph';
+import { CallableDeclaration } from './types';
 
 export function constructorClassName(cons: ConstructorDeclaration) {
   return cons.getParentIfKindOrThrow(SyntaxKind.ClassDeclaration).getName();
@@ -33,7 +33,7 @@ export function getDefinitionNode(
 export function getEntrypointTag(func: CallableDeclaration) {
   const signature = func.getSignature();
   const annotations = signature.getJsDocTags();
-  return annotations.find((tag) => tag.getName() == "entrypoint");
+  return annotations.find((tag) => tag.getName() == 'entrypoint');
 }
 
 export function getEntrypointText(tag: JSDocTagInfo) {
@@ -51,5 +51,5 @@ export function getCallableName(callable: CallableDeclaration) {
 export function isTraced(func: FunctionDeclaration | MethodDeclaration) {
   const signature = func.getSignature();
   const annotations = signature.getJsDocTags();
-  return annotations.find((tag) => tag.getName() == "trace");
+  return annotations.find((tag) => tag.getName() == 'trace');
 }
