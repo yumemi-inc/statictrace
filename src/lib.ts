@@ -5,14 +5,14 @@ import { Parser } from './parse';
 import { MermaidPrinter, TextPrinter } from './printer';
 import { Printer } from './types';
 
-function usePrinter(type: string) {
+function selectPrinter(type: string): Printer {
   switch (type) {
     case 'text':
-      return TextPrinter;
+      return new TextPrinter();
     case 'mermaid':
-      return MermaidPrinter;
+      return new MermaidPrinter();
     default:
-      return TextPrinter;
+      return new TextPrinter();
   }
 }
 
@@ -36,8 +36,8 @@ if (require.main === module) {
 
   const projectConfig = program.opts()['project'];
   const printerType = program.opts()['use'] || 'text';
-  const Printer = usePrinter(printerType);
+  const Printer = selectPrinter(printerType);
   const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
 
-  console.log(run(tsConfigFilePath, new Printer()));
+  console.log(run(tsConfigFilePath, Printer));
 }
