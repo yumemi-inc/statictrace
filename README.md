@@ -34,6 +34,10 @@ You can omit the `-p` option by creating an `.env` file with a `TS_PROJECT_CONFI
 
 - `u, --use <printer>` (optional): choose one of default printer types (`text` or `mermaid`).
 
+**Examples**
+
+- Output the result printed as mermaid graphs to a markdown file: `pnpm run parse -- -u mermaid > graphs.md`
+
 ```
 TS_PROJECT_CONFIG=/absolute/path/to/tsconfig.json
 ```
