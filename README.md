@@ -30,6 +30,10 @@ pnpm run parse -- -p /absolute/path/to/tsconfig.json
 
 You can omit the `-p` option by creating an `.env` file with a `TS_PROJECT_CONFIG` variable.
 
+**Other options**
+
+- `u, --use <printer>` (optional): choose one of default printer types (`text` or `mermaid`).
+
 ```
 TS_PROJECT_CONFIG=/absolute/path/to/tsconfig.json
 ```

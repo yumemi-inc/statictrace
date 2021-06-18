@@ -28,6 +28,10 @@ pnpm run parse -- -p /absolute/path/to/tsconfig.json
 
 `.env`ファイルを作成し、`TS_PROJECT_CONFIG`環境変数を定義することで、`-p`オプションは省略できます。
 
+**その他のオプション**
+
+- `u, --use <printer>` (optional): デフォルトの中からプリンターを選択する (`text`または`mermaid`).
+
 ```
 TS_PROJECT_CONFIG=/absolute/path/to/tsconfig.json
 ```
