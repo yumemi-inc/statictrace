@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Prints mermaid correctly 1`] = `
+"\`\`\`mermaid
+graph TD
+	Database_constructor --> get
+	Database_constructor --> saveUser
+	saveUser --> post
+\`\`\`
+\`\`\`mermaid
+graph TD
+	startRegistration --> processRegistration
+	processRegistration --> someRegistrationProcedure
+	someRegistrationProcedure --> callInsideTracedFn
+	startRegistration --> finishRegistration
+	finishRegistration --> callInsideTracedFn
+	startRegistration --> cleanupSomething
+\`\`\`
+\`\`\`mermaid
+graph TD
+	begin --> funcA
+	funcA --> funcC
+	begin --> beingNestedEntrypoint
+	beingNestedEntrypoint --> funcA
+	beingNestedEntrypoint --> funcB
+	begin --> funcB
+\`\`\`
+\`\`\`mermaid
+graph TD
+	beingNestedEntrypoint --> funcA
+	funcA --> funcC
+	beingNestedEntrypoint --> funcB
+\`\`\`
+\`\`\`mermaid
+graph TD
+	funcA --> funcC
+\`\`\`
+\`\`\`mermaid
+graph TD
+	infiniteSelfRecursion --> infiniteSelfRecursion
+\`\`\`
+\`\`\`mermaid
+graph TD
+	indirectInfiniteSelfRecursion --> makeIndirectRecursiveCall
+	makeIndirectRecursiveCall --> indirectInfiniteSelfRecursion
+\`\`\`"
+`;

@@ -4,9 +4,19 @@ import dotenv from 'dotenv';
 import { Parser } from './parse';
 import { MermaidPrinter, TextPrinter } from './printer';
 import { Printer } from './types';
-import fs from 'fs';
 
-export function run(config: string, printer: Printer = new MermaidPrinter()) {
+function usePrinter(type: string) {
+  switch (type) {
+    case 'text':
+      return TextPrinter;
+    case 'mermaid':
+      return MermaidPrinter;
+    default:
+      return TextPrinter;
+  }
+}
+
+export function run(config: string, printer: Printer = new TextPrinter()) {
   const parser = new Parser(config);
   parser.parse();
   return parser.print(printer);
@@ -25,11 +35,9 @@ if (require.main === module) {
   program.parse();
 
   const projectConfig = program.opts()['project'];
+  const printerType = program.opts()['use'] || 'text';
+  const Printer = usePrinter(printerType);
   const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
 
-  const result = run(tsConfigFilePath);
-
-  fs.writeFileSync('graphs.md', result);
-
-  // console.log();
+  console.log(run(tsConfigFilePath, new Printer()));
 }
