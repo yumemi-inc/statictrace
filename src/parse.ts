@@ -76,7 +76,7 @@ function traceFunctionRecursive(
 }
 
 export interface ParseFunction {
-  (): EntrypointGraph;
+  (): EntrypointGraph | Promise<EntrypointGraph>;
 }
 
 export function getParserForTsProject(tsConfigFilePath: string): ParseFunction {

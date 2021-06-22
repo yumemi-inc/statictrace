@@ -16,9 +16,12 @@ function selectPrinter(type: string): Printer {
   }
 }
 
-export function run(config: string, printer: Printer = new TextPrinter()) {
+export async function run(
+  config: string,
+  printer: Printer = new TextPrinter()
+) {
   const parser: ParseFunction = getParserForTsProject(config);
-  const result = parser();
+  const result = await Promise.resolve(parser());
   return printer.print(result);
 }
 
