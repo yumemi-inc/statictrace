@@ -20,7 +20,7 @@ export async function run(
   config: string,
   printer: Printer = new TextPrinter()
 ) {
-  const parser: ParseFunction = getParserForTsProject(config);
+  const parser = getParserForTsProject(config);
   const result = await Promise.resolve(parser());
   return printer.print(result);
 }
@@ -42,5 +42,7 @@ if (require.main === module) {
   const Printer = selectPrinter(printerType);
   const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
 
-  console.log(run(tsConfigFilePath, Printer));
+  run(tsConfigFilePath, Printer).then((output) => {
+    console.log(output);
+  });
 }
