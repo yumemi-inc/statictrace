@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 
 import dotenv from 'dotenv';
-import { Parser } from './parse';
+import { getParserForTsProject, ParseFunction } from './parse';
 import { MermaidPrinter, TextPrinter } from './printer';
 import { Printer } from './types';
 
@@ -17,9 +17,9 @@ function selectPrinter(type: string): Printer {
 }
 
 export function run(config: string, printer: Printer = new TextPrinter()) {
-  const parser = new Parser(config);
-  parser.parse();
-  return parser.print(printer);
+  const parser: ParseFunction = getParserForTsProject(config);
+  const result = parser();
+  return printer.print(result);
 }
 
 // True if run as a CLI application direcly
