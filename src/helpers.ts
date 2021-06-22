@@ -44,7 +44,7 @@ export function getEntrypointText(tag: JSDocTagInfo) {
 export function getCallableName(callable: CallableDeclaration) {
   // No traced functions are anonymous.
   return Node.isConstructorDeclaration(callable)
-    ? `${constructorClassName(callable)} constructor`
+    ? `${constructorClassName(callable)}_constructor`
     : callable.getName()!;
 }
 

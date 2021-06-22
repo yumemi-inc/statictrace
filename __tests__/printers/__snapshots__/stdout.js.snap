@@ -2,7 +2,7 @@
 
 exports[`Accepts custom printers 1`] = `
 "{
-  \\"Database constructor\\": 0,
+  \\"Database_constructor\\": 0,
   \\"get\\": 1,
   \\"saveUser\\": 1,
   \\"post\\": 2,
@@ -26,7 +26,7 @@ exports[`Accepts custom printers 1`] = `
 exports[`Prints to stdout correctly 1`] = `
 "=======================
 Entrypoint: Database
-Database constructor
+Database_constructor
 	get
 	saveUser
 		post
