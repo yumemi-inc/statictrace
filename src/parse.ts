@@ -80,11 +80,11 @@ export interface ParseFunction {
 }
 
 export function getParserForTsProject(tsConfigFilePath: string): ParseFunction {
-  const project = new Project({
-    tsConfigFilePath,
-    libFolderPath: './node_modules/typescript'
-  });
   return () => {
+    const project = new Project({
+      tsConfigFilePath,
+      libFolderPath: './node_modules/typescript'
+    });
     const entrypointGraph = new EntrypointGraph();
     for (const sourceFile of project.getSourceFiles()) {
       const functions = sourceFile.getFunctions();
