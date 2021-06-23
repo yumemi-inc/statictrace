@@ -6,13 +6,7 @@ import {
   isTraced
 } from './helpers';
 import { Environment } from './struct';
-import {
-  Entrypoints,
-  CallableDeclaration,
-  Printer,
-  Printable,
-  Into
-} from './types';
+import { Entrypoints, CallableDeclaration, Printable, Into } from './types';
 
 const MAX_CALL_DEPTH = 50;
 
@@ -81,33 +75,28 @@ function traceFunctionRecursive(
   }
 }
 
-export class Parser {
-  project: Project;
-  entrypointGraph: EntrypointGraph;
+export interface ParseFunction {
+  (): EntrypointGraph | Promise<EntrypointGraph>;
+}
 
-  constructor(tsConfigFilePath: string) {
-    this.project = new Project({
+export function getParserForTsProject(tsConfigFilePath: string): ParseFunction {
+  return () => {
+    const project = new Project({
       tsConfigFilePath,
       libFolderPath: './node_modules/typescript'
     });
-    this.entrypointGraph = new EntrypointGraph();
-  }
-
-  parse() {
-    for (const sourceFile of this.project.getSourceFiles()) {
+    const entrypointGraph = new EntrypointGraph();
+    for (const sourceFile of project.getSourceFiles()) {
       const functions = sourceFile.getFunctions();
       const classes = sourceFile.getClasses();
 
-      traceEntrypoints(this.entrypointGraph, functions);
+      traceEntrypoints(entrypointGraph, functions);
 
       for (const clazz of classes) {
-        traceEntrypoints(this.entrypointGraph, clazz.getConstructors());
-        traceEntrypoints(this.entrypointGraph, clazz.getMethods());
+        traceEntrypoints(entrypointGraph, clazz.getConstructors());
+        traceEntrypoints(entrypointGraph, clazz.getMethods());
       }
     }
-  }
-
-  print(printer: Printer) {
-    return printer.print(this.entrypointGraph);
-  }
+    return entrypointGraph;
+  };
 }

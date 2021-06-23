@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 
 import dotenv from 'dotenv';
-import { Parser } from './parse';
+import { getParserForTsProject, ParseFunction } from './parse';
 import { MermaidPrinter, TextPrinter } from './printer';
 import { Printer } from './types';
 
@@ -16,10 +16,13 @@ function selectPrinter(type: string): Printer {
   }
 }
 
-export function run(config: string, printer: Printer = new TextPrinter()) {
-  const parser = new Parser(config);
-  parser.parse();
-  return parser.print(printer);
+export async function run(
+  config: string,
+  printer: Printer = new TextPrinter()
+) {
+  const parser = getParserForTsProject(config);
+  const result = await Promise.resolve(parser());
+  return printer.print(result);
 }
 
 // True if run as a CLI application direcly
@@ -39,5 +42,7 @@ if (require.main === module) {
   const Printer = selectPrinter(printerType);
   const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
 
-  console.log(run(tsConfigFilePath, Printer));
+  run(tsConfigFilePath, Printer).then((output) => {
+    console.log(output);
+  });
 }

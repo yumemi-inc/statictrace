@@ -4,7 +4,7 @@ const { MermaidPrinter } = require('../../build/printer');
 
 dotenv.config();
 
-it('Prints mermaid correctly', () => {
-  const output = run(process.env.TS_PROJECT_TEST_CONFIG, new MermaidPrinter());
+it('Prints mermaid correctly', async () => {
+  const output = await run(process.env.TS_PROJECT_TEST_CONFIG, new MermaidPrinter());
   expect(output).toMatchSnapshot();
 });
