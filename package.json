@@ -2,6 +2,17 @@
   "name": "statictrace",
   "version": "0.1.0",
   "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/jlkiri/statictrace#readme",
+  "bugs": {
+    "url": "https://github.com/jlkiri/statictrace/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jlkiri/statictrace.git"
+  },
+  "license": "MIT",
+  "author": "Kirill Vasiltsov",
   "main": "src/lib.ts",
   "scripts": {
     "test": "jest",
@@ -11,26 +22,16 @@
     "build": "tsc",
     "format": "prettier -w ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jlkiri/statictrace.git"
-  },
-  "keywords": [],
-  "author": "Kirill Vasiltsov",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/jlkiri/statictrace/issues"
-  },
-  "homepage": "https://github.com/jlkiri/statictrace#readme",
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
     "commander": "^7.2.0",
+    "dotenv": "^10.0.0",
     "ts-morph": "^11.0.0",
     "typescript": "~4.3.2"
   },
   "devDependencies": {
     "@types/node": "^15.6.1",
-    "dotenv": "^10.0.0",
-    "prettier": "^2.3.1",
-    "jest": "^27.0.4"
+    "jest": "^27.0.4",
+    "prettier": "^2.3.1"
   }
 }
