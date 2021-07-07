@@ -1,0 +1,3 @@
+[tags]
+# JSDoc tags
+entrypoints = ["entrypoint", "begin"]

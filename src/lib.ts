@@ -1,9 +1,28 @@
 import { Command } from 'commander';
-
+import TOML from '@iarna/toml';
+import fs from 'fs';
+import path from 'path';
 import dotenv from 'dotenv';
-import { getParserForTsProject, ParseFunction } from './parse';
+import { getParserForTsProject } from './parse';
 import { MermaidPrinter, TextPrinter } from './printer';
 import { Printer } from './types';
+
+const defaultSettings = {};
+
+function loadTomlSettings(tsConfigFilePath: string) {
+  const normalizedPathToTsConfig = tsConfigFilePath.startsWith('/')
+    ? tsConfigFilePath
+    : path.join(process.cwd(), tsConfigFilePath);
+  const projectDir = path.dirname(normalizedPathToTsConfig);
+  const pathToSettings = path.join(projectDir, 'settings.toml');
+
+  if (!fs.existsSync(pathToSettings)) {
+    return defaultSettings;
+  }
+
+  const file = fs.readFileSync(pathToSettings, { encoding: 'utf-8' });
+  return TOML.parse(file);
+}
 
 function selectPrinter(type: string): Printer {
   switch (type) {
@@ -41,6 +60,8 @@ if (require.main === module) {
   const printerType = program.opts()['use'] || 'text';
   const Printer = selectPrinter(printerType);
   const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
+
+  const settings = loadTomlSettings(tsConfigFilePath);
 
   run(tsConfigFilePath, Printer).then((output) => {
     console.log(output);
