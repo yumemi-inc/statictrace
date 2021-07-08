@@ -1,27 +1,16 @@
 const { run } = require('../../build/lib');
 const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config();
 
+const configPath = path.join(
+  process.env.TS_PROJECT_TEST,
+  'basic',
+  'tsconfig.json'
+);
+
 it('Prints to stdout correctly', async () => {
-  const output = await run(process.env.TS_PROJECT_TEST_CONFIG);
+  const output = await run(configPath);
   expect(output).toMatchSnapshot();
 });
-
-it('Accepts custom printers', async () => {
-  const output = await run(process.env.TS_PROJECT_TEST_CONFIG, new JsonPrinter());
-  expect(output).toMatchSnapshot();
-});
-
-class JsonPrinter {
-  print(graph) {
-    const printable = graph.into();
-    let obj = {};
-    for (let fns of printable.values()) {
-      for (let fn of fns) {
-        obj[fn.name()] = fn.level();
-      }
-    }
-    return JSON.stringify(obj, null, 2);
-  }
-}

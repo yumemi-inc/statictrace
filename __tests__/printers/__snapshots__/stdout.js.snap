@@ -1,28 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Accepts custom printers 1`] = `
-"{
-  \\"Database_constructor\\": 0,
-  \\"get\\": 1,
-  \\"saveUser\\": 1,
-  \\"post\\": 2,
-  \\"startRegistration\\": 0,
-  \\"processRegistration\\": 1,
-  \\"someRegistrationProcedure\\": 2,
-  \\"callInsideTracedFn\\": 2,
-  \\"finishRegistration\\": 1,
-  \\"cleanupSomething\\": 1,
-  \\"begin\\": 0,
-  \\"funcA\\": 0,
-  \\"funcC\\": 1,
-  \\"beingNestedEntrypoint\\": 0,
-  \\"funcB\\": 1,
-  \\"infiniteSelfRecursion\\": 1,
-  \\"indirectInfiniteSelfRecursion\\": 2,
-  \\"makeIndirectRecursiveCall\\": 1
-}"
-`;
-
 exports[`Prints to stdout correctly 1`] = `
 "=======================
 Entrypoint: Database

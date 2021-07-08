@@ -1,28 +1,9 @@
 import { Command } from 'commander';
-import TOML from '@iarna/toml';
-import fs from 'fs';
-import path from 'path';
 import dotenv from 'dotenv';
 import { getParserForTsProject } from './parse';
 import { MermaidPrinter, TextPrinter } from './printer';
 import { Printer } from './types';
-
-const defaultSettings = {};
-
-function loadTomlSettings(tsConfigFilePath: string) {
-  const normalizedPathToTsConfig = tsConfigFilePath.startsWith('/')
-    ? tsConfigFilePath
-    : path.join(process.cwd(), tsConfigFilePath);
-  const projectDir = path.dirname(normalizedPathToTsConfig);
-  const pathToSettings = path.join(projectDir, 'settings.toml');
-
-  if (!fs.existsSync(pathToSettings)) {
-    return defaultSettings;
-  }
-
-  const file = fs.readFileSync(pathToSettings, { encoding: 'utf-8' });
-  return TOML.parse(file);
-}
+import { loadTomlSettings } from './settings';
 
 function selectPrinter(type: string): Printer {
   switch (type) {
@@ -35,12 +16,10 @@ function selectPrinter(type: string): Printer {
   }
 }
 
-export async function run(
-  config: string,
-  printer: Printer = new TextPrinter()
-) {
-  const parser = getParserForTsProject(config);
+export async function run(pathToTsConfig: string, printerType: string) {
+  const parser = getParserForTsProject(pathToTsConfig);
   const result = await Promise.resolve(parser());
+  const printer = selectPrinter(printerType);
   return printer.print(result);
 }
 
@@ -54,16 +33,27 @@ if (require.main === module) {
     '-u, --use <printer>',
     'use one of default printers (text, mermaid)'
   );
+  program.option('-c, --config <path>', 'path to a configuration file');
   program.parse();
 
-  const projectConfig = program.opts()['project'];
-  const printerType = program.opts()['use'] || 'text';
-  const Printer = selectPrinter(printerType);
-  const tsConfigFilePath = projectConfig || process.env.TS_PROJECT_CONFIG;
+  const cliPathToTsConfig: string | undefined = program.opts()['project'];
+  const cliPrinterType: string | undefined = program.opts()['use'];
+  const pathToStaticTraceConfig: string | undefined = program.opts()['config'];
 
-  const settings = loadTomlSettings(tsConfigFilePath);
+  const settings = loadTomlSettings(pathToStaticTraceConfig);
 
-  run(tsConfigFilePath, Printer).then((output) => {
+  const pathToTsConfig =
+    cliPathToTsConfig ??
+    settings?.project?.path ??
+    process.env.TS_PROJECT_CONFIG;
+
+  const printerType = cliPrinterType ?? settings?.printer?.type ?? 'text';
+
+  if (!pathToTsConfig) {
+    throw new Error('Provide a valid path to tsconfig.json!');
+  }
+
+  run(pathToTsConfig, printerType).then((output) => {
     console.log(output);
   });
 }
