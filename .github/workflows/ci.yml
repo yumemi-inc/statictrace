@@ -39,5 +39,5 @@ jobs:
 
       - name: Run tests
         env:
-          TS_PROJECT_TEST_CONFIG: ${{ secrets.TS_PROJECT_TEST_CONFIG }}
+          TS_PROJECT_TEST: ${{ secrets.TS_PROJECT_TEST }}
         run: npm run test
