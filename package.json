@@ -1,8 +1,14 @@
 {
   "name": "statictrace",
   "version": "1.0.0-beta.1",
-  "description": "",
-  "keywords": [],
+  "description": "A library for semi-automatic static testing.",
+  "keywords": [
+    "testing",
+    "static analysis",
+    "tool",
+    "parsers",
+    "compilers"
+  ],
   "homepage": "https://github.com/jlkiri/statictrace#readme",
   "bugs": {
     "url": "https://github.com/jlkiri/statictrace/issues"
@@ -12,7 +18,10 @@
     "url": "git+https://github.com/jlkiri/statictrace.git"
   },
   "license": "MIT",
-  "author": "Kirill Vasiltsov",
+  "contributors": [
+    "Kirill Vasiltsov",
+    "Nobuyuki Tsutsui"
+  ],
   "main": "src/lib.ts",
   "scripts": {
     "test": "jest",
