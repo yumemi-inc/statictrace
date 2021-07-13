@@ -9,13 +9,13 @@
     "parsers",
     "compilers"
   ],
-  "homepage": "https://github.com/jlkiri/statictrace#readme",
+  "homepage": "https://github.com/yumemi-inc/statictrace#readme",
   "bugs": {
-    "url": "https://github.com/jlkiri/statictrace/issues"
+    "url": "https://github.com/yumemi-inc/statictrace/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jlkiri/statictrace.git"
+    "url": "git+https://github.com/yumemi-inc/statictrace.git"
   },
   "license": "MIT",
   "contributors": [
