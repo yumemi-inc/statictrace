@@ -22,7 +22,6 @@
     "Kirill Vasiltsov",
     "Nobuyuki Tsutsui"
   ],
-  "main": "src/lib.ts",
   "scripts": {
     "test": "jest",
     "test:update": "jest --updateSnapshot",
