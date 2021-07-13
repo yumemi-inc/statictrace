@@ -13,12 +13,12 @@ specifiers:
 dependencies:
   '@iarna/toml': 2.2.5
   commander: 7.2.0
+  dotenv: 10.0.0
   ts-morph: 11.0.0
   typescript: 4.3.2
 
 devDependencies:
   '@types/node': 15.6.1
-  dotenv: 10.0.0
   jest: 27.0.4
   prettier: 2.3.1
 
@@ -1072,7 +1072,7 @@ packages:
   /dotenv/10.0.0:
     resolution: {integrity: sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==}
     engines: {node: '>=10'}
-    dev: true
+    dev: false
 
   /electron-to-chromium/1.3.750:
     resolution: {integrity: sha512-Eqy9eHNepZxJXT+Pc5++zvEi5nQ6AGikwFYDCYwXUFBr+ynJ6pDG7MzZmwGYCIuXShLJM0n4bq+aoKDmvSGJ8A==}
