@@ -1,22 +1,19 @@
-name: CI
+name: Publish
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  release:
+    types: [created]
 
 jobs:
-  build-and-test:
-    name: Build & Test
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Node
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: '14'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Cache pnpm modules
         uses: actions/cache@v2
@@ -37,7 +34,6 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Run tests
+      - run: pnpm publish
         env:
-          TS_PROJECT_TEST: ${{ secrets.TS_PROJECT_TEST }}
-        run: pnpm run test
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
