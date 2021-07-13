@@ -36,5 +36,7 @@ jobs:
         run: pnpm run build
 
       - run: pnpm publish --tag beta
+        with:
+          tag_name: ${{ github.ref }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
