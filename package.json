@@ -9,6 +9,9 @@
     "parsers",
     "compilers"
   ],
+  "bin": {
+    "statictrace": "./build/lib.js"
+  },
   "homepage": "https://github.com/yumemi-inc/statictrace#readme",
   "bugs": {
     "url": "https://github.com/yumemi-inc/statictrace/issues"
