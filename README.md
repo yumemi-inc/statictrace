@@ -50,12 +50,6 @@ const output = run('/absolute/path/to/tsconfig.json');
 // ...do something with output
 ```
 
-#### `run(pathToTsConfig: string, printer?: Printer): any`
+#### `run(pathToTsConfig: string, printerType: "text" | "mermaid"): any`
 
-Load all project files and build a graph of all function calls marked with `@entrypoint` or `@trace` tags. You can optionally pass a `Printer` as a second argument. A `Printer` is an interface that represents anything that can print (display in one way or another) the result of parsing. You can use anything that implements this interface. If you don't provide a second argument, a default `TextPrinter` returns the result as a string.
-
-```ts
-interface Printer {
-  print(graph: Into<Printable>): any;
-}
-```
+Load all project files and build a graph of all function calls marked with `@entrypoint` or `@trace` tags. You should pass a printer type as a second argument. A printer is an interface that represents anything that can print (display the static analysis result in one way or another). Currently you cannot provide your own implementations but can choose one of the default ones.
