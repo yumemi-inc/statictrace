@@ -22,7 +22,7 @@ pnpm run build
 ### `ts-node`
 
 ```
-`pnpx ts-node src/lib.ts -p /absolute/path/to/tsconfig.json`
+pnpx ts-node src/lib.ts -p /absolute/path/to/tsconfig.json
 ```
 
 ### Use as CLI

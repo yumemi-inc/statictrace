@@ -30,8 +30,7 @@ pnpx ts-node src/lib.ts -p /absolute/path/to/tsconfig.json
 ### Use as CLI
 
 ```
-pnpm run build
-pnpm run parse -- -p /absolute/path/to/tsconfig.json
+statictrace -- -p /absolute/path/to/tsconfig.json
 ```
 
 You can omit the `-p` option by creating an `.env` file with a `TS_PROJECT_CONFIG` variable.
